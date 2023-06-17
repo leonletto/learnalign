@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Guardian{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center">Welcome, {{ username }}!</h1>
+    <p>Below you will find your learners:</p>
+    <ul>
+      {% for learner in learners %}
+        <li>{{ learner['username'] }} (Role: {{ learner['role'] }}, Parent: {{ learner['parent'] }})</li>
+      {% endfor %}
+    </ul>
+</div>
+{% endblock %}

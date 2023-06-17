@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Personalize{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center">Who are you?</h1>
+    <form method="POST">
+        <div class="row">
+            <div class="col-4">
+                <div class="card bg-light text-center">
+                    <button class="btn btn-outline-primary btn-block card-body" name="persona" value="learner">
+                        <h5 class="card-title">Learner</h5>
+                        <p class="card-text">I am a student</p>
+                    </button>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card bg-light text-center">
+                    <button class="btn btn-outline-primary btn-block card-body" name="persona" value="guardian">
+                        <h5 class="card-title">Guardian</h5>
+                        <p class="card-text">I am a parent, teacher, or tutor</p>
+                    </button>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card bg-light text-center">
+                    <button class="btn btn-outline-primary btn-block card-body" name="persona" value="creator">
+                        <h5 class="card-title">Creator</h5>
+                        <p class="card-text">I am a content creator</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
