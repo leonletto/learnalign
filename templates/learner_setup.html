@@ -3,8 +3,9 @@
 {% block title %}Learner Setup{% endblock %}
 {% block content %}
 <div class="container">
-    <h1 class="my-4 text-center">Welcome  {{ username.capitalize() }}!</h1>
-    <p>Below you will find your curriculum</p>
+    <br/><br/>
+
+    <p>Help us personalize your experience.</p>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <div class="alert alert-{{ messages[0][0] }}">
@@ -12,6 +13,7 @@
     </div>
     {% endif %}
     {% endwith %}
+  
     <form action="{{ url_for('collect_user_info') }}" method="POST">
         <div class="form-group">
             <label for="name">Name:</label>
@@ -29,9 +31,87 @@
             <label for="interest">Interest:</label>
             <input type="text" class="form-control" id="interest" name="interest" value="{{ state.interest | default('') }}">
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="school">
+              <label for="school">School:</label>
+              <input type="text" class="form-control" id="school" name="school" value="{{ state.school | default('') }}">
+      </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" class="form-control" id="city" name="city" value="{{ state.city | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="state">State:</label>
+            <input type="text" class="form-control" id="state" name="state" value="{{ state.state | default('') }}">
+        </div>
+  <br/>
+
+  <p>How did this video help you learn?</p>
+  <div class="row mt-5">
+                {% set video_ids = ["ZGl2ExHwdak", "OnbcKzlWNeE", "ffLLmV4mZwU", "xmJjQ3KyTdw", "YtN9_tCaRQc"] %}
+                {% for id in video_ids %}
+                <div class="col" style="flex: 0 0 20%; max-width: 20%;">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item youtube-video" src="https://www.youtube.com/embed/{{ id }}" data-id="{{ id }}"></iframe>
+                    </div>
+                    <div class="mt-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="video_feedback_{{ id }}" id="great_{{ id }}" value="great">
+                            <label class="form-check-label" for="great_{{ id }}">
+                                Great
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="video_feedback_{{ id }}" id="moderate_{{ id }}" value="moderate">
+                            <label class="form-check-label" for="moderate_{{ id }}">
+                                Moderate
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="video_feedback_{{ id }}" id="not_at_all_{{ id }}" value="not_at_all">
+                            <label class="form-check-label" for="not_at_all_{{ id }}">
+                                Not at all
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+    <br/><br/>
+        <div class="form-group">
+            <label for="best">Which vidoe is your top choice?</label>
+            <input type="number" class="form-control" id="best" name="best" min="1" max="5" value="{{ state.best | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="worst">Which vidoe do you leaset prefer?</label>
+            <input type="number" class="form-control" id="worst" name="worst" min="1" max="5" value="{{ state.worst | default('') }}">
+        </div>
+    
+    <br/>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <br/><br/><br/><br/>
+
     </form>
+
+
 </div>
+
+
+    <!-- YouTube video modal -->
+    <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" id="videoIframe" src="" allowfullscreen></iframe>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
 
 <script>
   // Add an event listener to the form submit event
@@ -43,13 +123,24 @@
     const age = document.querySelector('#age').value;
     const grade = document.querySelector('#grade').value;
     const interest = document.querySelector('#interest').value;
+    const best = document.querySelector('#best').value;
+    const worst = document.querySelector('#worst').value;
+    const school = document.querySelector('#school').value;
+    const city = document.querySelector('#city').value;
+    const state = document.querySelector('#state').value;
 
+    
     // Create an object with the form data
     const formData = {
       name: name,
       age: age,
       grade: grade,
-      interest: interest
+      interest: interest,
+      best: best,
+      worst: worst,
+      school: school,
+      city: city,
+      state: state
     };
 
     // Convert the formData object to JSON string
@@ -83,6 +174,20 @@
     // Send the request with the JSON data
     xhr.send(jsonData);
   });
+
+  // Click event to handle the YouTube video popup
+    document.querySelectorAll('.youtube-video').forEach(function(video) {
+        video.addEventListener('click', function() {
+            var videoSrc = this.src;
+            document.getElementById('videoIframe').src = videoSrc + "?autoplay=1";
+            $('#videoModal').modal('show');
+        });
+    });
+
+    // Stop the video when the modal is closed
+    $('#videoModal').on('hide.bs.modal', function(e) {
+        document.getElementById('videoIframe').src = "";
+    });
 </script>
 
 {% endblock %}

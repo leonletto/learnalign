@@ -28,7 +28,7 @@ def setup_routes(app, auth, User, db, Topic, interface_path, base_path):
     # Clear the logged_in key from the session
     session.pop('logged_in', None)
     # Redirect the user to the login page
-    return redirect(f'{interface_path}/login', code=302)
+    return redirect(url_for('login'))
 
   @app.route(f'{interface_path}/collect_user_info', methods=['POST'])
   def collect_user_info():

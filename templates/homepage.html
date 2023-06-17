@@ -3,8 +3,62 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="my-4">Welcome to HackAI Learn</h1>
-    <p>A New way to learn YOUR way!</p>
+<div style="position: relative; min-height: 100vh;">
+    <video autoplay loop muted style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
+        <source src="{{ url_for('static', filename='videos/IntroVideoSmall.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div style="position: relative; z-index: 1;">
+        <div class="container">
+            <h1 class="my-4 scrolling-text">Welcome to HackAI Learn</h1>
+            <p class="scrolling-text">A New way to learn YOUR way!</p>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/><br/>
+        <br/>
+        <br/>
+        <br/>
+        <div style="width: 100%; background-color: white; text-align: center;">
+            <p>This is where more content goes</p>
+        </div>
+        <div style="width: 100%; position: fixed; background-color: white; text-align: center;">
+        
+        </div>
+    </div>
 </div>
+
+<div id="videoModal" class="modal" style="display: none;">
+    <span class="close">&times;</span>
+    <video id="fullVideo" width="960">
+        <source src="{{ url_for('static', filename='videos/IntroVideo.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+<script>
+    var modal = document.getElementById("videoModal");
+    var btn = document.getElementById("openVideo");
+    var span = document.getElementsByClassName("close")[0];
+    var video = document.getElementById("fullVideo");
+
+    btn.onclick = function (event) {
+        event.preventDefault();
+        modal.style.display = "block";
+        video.play();
+    }
+
+    span.onclick = function () {
+        modal.style.display = "none";
+        video.pause();
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            video.pause();
+        }
+    }
+</script>
 {% endblock %}

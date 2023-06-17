@@ -277,13 +277,74 @@ class CaInterface:
         if username and password and verify_password(username, password):
           session['logged_in'] = True
           session['username'] = username
-          return redirect(f'{self.interface_path}/persona', code=302)
+          return redirect(f'{self.interface_path}/learner_setup', code=302)
         else:
           flash('Invalid username or password')
       return render_template('login.html')
 
+    @app.route(f'{self.interface_path}/register', methods=['GET', 'POST'])
+    def register():
+      if request.method == 'POST':
+        firstname = request.form.get('firstname')
+        lastname = request.form.get('lastname')
+        email = request.form.get('email')
+        username = request.form.get('username').lower()
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        user_type = session.get('role')
+        # user_type = request.form.get('user_type')
+
+        # First, check if the passwords match
+        if password != confirm_password:
+          flash('Passwords do not match.', 'danger')
+          return redirect(f'{self.interface_path}/register', code=302)
+
+        # Prepare the state as a JSON string
+        state = json.dumps({
+          'firstname': firstname,
+          'lastname': lastname,
+          'email': email
+        })
+
+        # Then, check if the username already exists in your database
+        if self.user_exists(username):
+          flash('Username already exists')
+          return render_template('register.html')
+
+        # If the passwords match and the username is not taken, create the user
+        self.create_user(username, password, user_type, state)
+        flash('Successfully registered')
+
+        # Log the user in
+        session['logged_in'] = True
+        session['username'] = username
+
+        # Redirect to the learner_setup route
+        return redirect(f'{self.interface_path}/learner_setup', code=302)
+
+      return render_template('register.html')
+
+    @app.route(f'{self.interface_path}/persona_selection', methods=['GET', 'POST'])
+    def persona_selection():
+      if request.method == 'POST':
+        session['role'] = request.form.get('persona')
+        return redirect(f'{self.interface_path}/register', code=302)
+      return render_template('persona_selection.html')
+
   def run(self):
     self.app.run(host='0.0.0.0', debug=True, port=81)
+
+  def user_exists(self, username):
+    user = User.query.filter_by(username=username).first()
+    return user is not None
+
+  def create_user(self, username, password, user_type, state):
+    highest_id_user = User.query.order_by(User.id.desc()).first()
+    new_id = (highest_id_user.id + 1) if highest_id_user else 1
+
+    user = User(id=new_id, username=username, password=password, role=user_type, state=state)
+    db.session.add(user)
+    db.session.commit()
 
 
 def main():

@@ -1,0 +1,30 @@
+@keyframes scroll {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+
+.scrolling-text {
+  animation: scroll 60s linear infinite;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background-color: lightgray;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto; /* This will make the main content grow while the footer stays at the bottom */
+}
+
+footer {
+  flex-shrink: 0; /* This will prevent the footer from shrinking */
+}

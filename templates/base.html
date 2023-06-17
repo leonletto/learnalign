@@ -6,6 +6,8 @@
     <title>{% block title %}Title{% endblock %}</title>
     <!-- Add the Bootstrap 4 CSS file from a CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
 </head>
 <body>
 <!-- Add the top bar -->
@@ -16,19 +18,26 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+            {% if 'logged_in' in session and session['logged_in'] %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logged_in') }}">Home</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('persona') }}">Persona</a>
             </li>
-            {% if 'logged_in' in session and session['logged_in'] %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('learner_setup') }}">Profile</a>
+            </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                 </li>
             {% else %}
-                <li class="nav-item">
+            # pull these items to the right
+                <li class="nav-item" align>
                     <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('persona_selection') }}">Register</a>
                 </li>
             {% endif %}
         </ul>
@@ -36,7 +45,9 @@
 </nav>
 
 <!-- Include the content from the child templates -->
+<div class="main-content">
 {% block content %}{% endblock %}
+</div>
 
 <!-- Add the Bootstrap 4 and jQuery JS files from a CDN -->
 {% block scripts %}
@@ -44,13 +55,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
-
-{% if 'logged_in' in session and session['logged_in'] %}
     <!-- Add "Logged In" status at the bottom of the page -->
-    <footer style="position: fixed; left: 0; bottom: 0; width: 100%; text-align: center; background-color: lightgray;">
-        <p>Logged In</p>
-    </footer>
-{% endif %}
+<footer>
+    <p>Logged In</p>
+</footer>
 
 </body>
 </html>
