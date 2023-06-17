@@ -1,0 +1,88 @@
+<!-- learner_setup.html -->
+{% extends 'base.html' %}
+{% block title %}Learner Setup{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center">Welcome  {{ username.capitalize() }}!</h1>
+    <p>Below you will find your curriculum</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="alert alert-{{ messages[0][0] }}">
+      {{ messages[0][1] }}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <form action="{{ url_for('collect_user_info') }}" method="POST">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ state.name | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" class="form-control" id="age" name="age" value="{{ state.age | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="grade">Grade:</label>
+            <input type="number" class="form-control" id="grade" name="grade" value="{{ state.grade | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="interest">Interest:</label>
+            <input type="text" class="form-control" id="interest" name="interest" value="{{ state.interest | default('') }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+  // Add an event listener to the form submit event
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting
+
+    // Get the form inputs values
+    const name = document.querySelector('#name').value;
+    const age = document.querySelector('#age').value;
+    const grade = document.querySelector('#grade').value;
+    const interest = document.querySelector('#interest').value;
+
+    // Create an object with the form data
+    const formData = {
+      name: name,
+      age: age,
+      grade: grade,
+      interest: interest
+    };
+
+    // Convert the formData object to JSON string
+    const jsonData = JSON.stringify(formData);
+
+    // Create a new XMLHttpRequest object
+    const xhr = new XMLHttpRequest();
+
+    // Set the request type and URL
+    xhr.open('POST', '{{ url_for("collect_user_info") }}', true);
+
+    // Set the request header
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    // Set the onload event handler
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        console.log('Learner setup data successfully submitted');
+        // Redirect the user to the desired page after successful form submission
+        window.location.href = '{{ url_for("learner_setup") }}';
+      } else {
+        console.error('Error:', xhr.statusText);
+      }
+    };
+
+    // Set the onerror event handler
+    xhr.onerror = function() {
+      console.error('Request failed');
+    };
+
+    // Send the request with the JSON data
+    xhr.send(jsonData);
+  });
+</script>
+
+{% endblock %}

@@ -30,6 +30,7 @@ class User(db.Model):
   password = db.Column(db.String(120), nullable=False)
   role = db.Column(db.String(80), nullable=False)
   parent = db.Column(db.String(80))
+  state = db.Column(db.Text)  # For storing the state as a JSON string
 
 
 class Topic(db.Model):

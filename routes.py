@@ -1,4 +1,4 @@
-from flask import request, jsonify, flash, redirect, session, render_template
+from flask import request, jsonify, url_for, flash, redirect, session, render_template
 import subprocess
 import json
 
@@ -11,10 +11,17 @@ def setup_routes(app, auth, User, db, Topic, interface_path, base_path):
 
   @app.route(f'{interface_path}/homepage', methods=['GET'])
   def homepage():
+    return render_template(
+      'homepage.html')  # homepage.html should be your homepage template
+
+  @app.route(f'{interface_path}/logged_in', methods=['GET'])
+  def logged_in():
     if 'logged_in' not in session or not session['logged_in']:
       return redirect(f'{interface_path}/login', code=302)
-    return render_template(
-      'index.html')  # homepage.html should be your homepage template
+
+    username = session['username']  # retrieve the username from session
+
+    return render_template('logged_in.html', username=username)
 
   @app.route(f'{interface_path}/logout', methods=['GET'])
   def logout():
@@ -23,8 +30,54 @@ def setup_routes(app, auth, User, db, Topic, interface_path, base_path):
     # Redirect the user to the login page
     return redirect(f'{interface_path}/login', code=302)
 
+  @app.route(f'{interface_path}/collect_user_info', methods=['POST'])
+  def collect_user_info():
+    if 'logged_in' not in session or not session['logged_in']:
+      return redirect(f'{interface_path}/login', code=302)
+
+    username = session['username']  # retrieve the username from session
+
+    data = request.get_json()  # get the incoming data
+
+    # Get the current user from the database
+    current_user = User.query.filter_by(username=username).first()
+    if current_user is None:
+      flash('User not found.', 'error')  # Flash an error message
+      return redirect(f'{interface_path}/learner_setup')  # Redirect to learner_setup template
+
+    current_user.state = json.dumps(data)  # Convert the incoming data to a JSON string
+    db.session.commit()  # Commit the changes
+
+    flash('User state updated successfully.', 'success')  # Flash a success message
+
+    return redirect(f'{interface_path}/learner_setup')  # Redirect to learner_setup template
+
+  @app.route(f'{interface_path}/learner_setup', methods=['GET'])
+  def learner_setup():
+    if 'logged_in' not in session or not session['logged_in']:
+      return redirect(f'{interface_path}/login', code=302)
+
+    username = session['username']  # retrieve the username from session
+
+    # Get the current user from the database
+    current_user = User.query.filter_by(username=username).first()
+    if current_user is None:
+      flash('User not found.', 'error')  # Flash an error message
+      return redirect(f'{interface_path}/login')  # Redirect to login page
+
+    user_state = json.loads(current_user.state) if current_user.state else {}  # Load the current user state
+    return render_template('learner_setup.html', state=user_state, username=username)
+
+  # ... remaining routes here ...
+
+
   @app.route(f'{interface_path}/persona', methods=['GET', 'POST'])
   def persona():
+    if 'logged_in' not in session or not session['logged_in']:
+      return redirect(f'{interface_path}/login', code=302)
+
+    username = session['username']  # retrieve the username from session
+
     if request.method == 'POST':
       persona = request.form.get('persona')
       if persona:
@@ -39,7 +92,7 @@ def setup_routes(app, auth, User, db, Topic, interface_path, base_path):
         else:
           return redirect(f'{interface_path}/homepage', code=302)
 
-    return render_template('persona.html')
+    return render_template('persona.html', username=username)
 
   @app.route(f'{interface_path}/learner', methods=['GET'])
   def learner():
