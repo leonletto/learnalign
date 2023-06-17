@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, flash, redirect, session, render_temp
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
 import os
-import subprocess
 import json
 from routes import setup_routes
 
@@ -15,7 +14,7 @@ app.secret_key = '8238f8hwefrw83eed'
 # Load the database URL from the environment variable
 dburl = os.getenv('DATABASE_URL')
 if not dburl:
-  dburl = 'postgresql://postgres:postgres@localhost:5432/postgres'
+  dburl = 'postgresql://lettol@localhost:5432/lettol'
 else:
   # change postgres to postgresql in the dburl
   dburl = dburl.replace('postgres', 'postgresql')
@@ -41,46 +40,46 @@ class Topic(db.Model):
   notes = db.Column(db.Text)  # For storing the notes as a JSON string
 
 
-@app.before_first_request
-def create_tables():
-  # if not User.__table__.exists(bind=db.engine):
-  db.create_all()
-
-  users = {
-    "admin": {
-      "password": "learnalign",
-      "role": "admin"
-    },
-    "cathy": {
-      "password": "password",
-      "role": "parent"
-    },
-    "joey": {
-      "password": "password",
-      "role": "student",
-      "parent": "cathy"
-    },
-    "mike": {
-      "password": "password",
-      "role": "student"
-    },
-    "mary": {
-      "password": "password",
-      "role": "content"
-    },
-  }
-
-  for username, data in users.items():
-    user = User.query.filter_by(username=username).first()
-    if not user:
-      new_user = User(username=username,
-                      password=data["password"],
-                      role=data["role"])
-      if "parent" in data:
-        new_user.parent = data["parent"]
-      db.session.add(new_user)
-
-  db.session.commit()
+# @app.before_first_request
+# def create_tables():
+#   if not User.__table__.exists(bind=db.engine):
+#     db.create_all()
+#
+#     users = {
+#       "admin": {
+#         "password": "learnalign",
+#         "role": "admin"
+#       },
+#       "cathy": {
+#         "password": "password",
+#         "role": "parent"
+#       },
+#       "joey": {
+#         "password": "password",
+#         "role": "student",
+#         "parent": "cathy"
+#       },
+#       "mike": {
+#         "password": "password",
+#         "role": "student"
+#       },
+#       "mary": {
+#         "password": "password",
+#         "role": "content"
+#       },
+#     }
+#
+#     for username, data in users.items():
+#       user = User.query.filter_by(username=username).first()
+#       if not user:
+#         new_user = User(username=username,
+#                         password=data["password"],
+#                         role=data["role"])
+#         if "parent" in data:
+#           new_user.parent = data["parent"]
+#         db.session.add(new_user)
+#
+#     db.session.commit()
 
 
 def populate_db(data, parent=None):
