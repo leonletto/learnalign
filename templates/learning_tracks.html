@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Learning Track{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4 text-center">What do want to learn today?</h1>
+    <form method="POST">
+        <div class="row">
+            <div class="form-group col-12">
+                <label for="course">Choose a course:</label>
+                <select class="form-control" id="course" name="course">
+                    <option value="29">Math</option>
+                    <option value="1">Social Studies</option>
+                    <option value="6">Science</option>
+                    <option value="10">Language Arts</option>
+                    <option value="14">Electives</option>
+                </select>
+            </div>
+            <div class="form-group col-12">
+                <label for="topic">Choose a topic:</label>
+                <select class="form-control" id="topic" name="topic">
+                    {% for topic in topics %}
+                    <option value="{{ topic.id }}">{{ topic.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <h1 class="my-4 text-center">How do you want to learn, today?</h1>
+        <div class="centered-div">
+        <div class="row">
+            <div class="col-6">
+                <div class="card bg-light text-center">
+                    <button type="submit" class="btn btn-outline-primary btn-block card-body" name="track" value="story">
+                        <h5 class="card-title">Story Telling</h5>
+                        <p class="card-text">Multi-media AI-enabled learning</p>
+                    </button>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card bg-light text-center">
+                    <button type="submit" class="btn btn-outline-primary btn-block card-body" name="track" value="tutorial">
+                        <h5 class="card-title">Video Tutorial</h5>
+                        <p class="card-text">Personalized teacher</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Assuming jQuery is available
+    $('#course').change(function() {
+    $.ajax({
+        url: '/get_topics',  
+        data: { 'course': $(this).val() },
+        success: function(response) {
+            console.log(response)
+            // Remove existing options
+            $('#topic').empty();
+            // Add new options
+            $.each(response, function(index, value) {
+                $('#topic').append('<option value="' + value.id + '">' + value.name + '</option>');
+            });
+            // Update form data
+            $('form').data('course', $(this).val());
+            $('form').data('topic', $('#topic').val());
+        }
+    });
+});
+</script>
+
+{% endblock %}

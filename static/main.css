@@ -7,14 +7,77 @@
   animation: scroll 60s linear infinite;
 }
 
+#sidebar-wrapper {
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.last-div {
+  padding-bottom: 40px;
+  margin-bottom: 20px;
+}
+
+.img-wrapper {
+    width: 25vw;
+    height: 0;
+    padding-bottom: 20%; /* 140 / 350 = 0.4, which is 40% */
+    position: relative;
+}
+
+.my-wide-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.my-image {
+    height: 500px; /* change to the width you want */
+    width: 300px;
+    object-fit: cover; /* this will ensure that the image covers the entire width and height specified without distortion */
+}
+
+#large-text {
+  text-size: ;
+}
+
+.my-navbar {
+    background-color: #00bff0 !important;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.my-navbar a.nav-link {
+    color: #abcdef; 
+}
+
+
+body {
+    padding-top: 70px; /* Adjust this value according to the height of your navbar */
+    /* padding-bottom: 70px; */
+}
+
+.centered-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 footer {
-  position: fixed;
+  /* position: fixed; */
   left: 0;
   bottom: 0;
+  padding-top: 10px;
   width: 100%;
   text-align: center;
-  background-color: lightgray;
+  background-color: #989c9d;
 }
+footer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+
 body {
   display: flex;
   flex-direction: column;
@@ -28,3 +91,33 @@ body {
 footer {
   flex-shrink: 0; /* This will prevent the footer from shrinking */
 }
+
+.favorite-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 24px;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.favorite-button:focus,
+.favorite-button:hover {
+  color: red;
+}
+
+.favorite-button .fa-heart {
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.favorite-button .fa-heart:hover {
+  transform: scale(1.2);
+}
+
+.favorite-button .filled {
+  color: red;
+}
+
+

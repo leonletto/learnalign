@@ -16,8 +16,16 @@
   
     <form action="{{ url_for('collect_user_info') }}" method="POST">
         <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ state.name | default('') }}">
+            <label for="firstname">First Name:</label>
+            <input type="text" class="form-control" id="firstname" name="firstname" value="{{ state.firstname | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="lastname">Last Name:</label>
+            <input type="text" class="form-control" id="lastname" name="lastname" value="{{ state.lastname | default('') }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" name="email" value="{{ state.email | default('') }}">
         </div>
         <div class="form-group">
             <label for="age">Age:</label>
@@ -102,7 +110,7 @@
         <div class="modal-content">
           <div class="modal-body">
             <div class="embed-responsive embed-responsive-16by9">
-              <iframe class="embed-responsive-item" id="videoIframe" src="" allowfullscreen></iframe>
+              <iframe class="embed-responsive-item" id="videoIframe" src="" allowfullscreen allow="fullscreen;"></iframe>
             </div>
           </div>
           <div class="modal-footer">
@@ -119,7 +127,9 @@
     event.preventDefault(); // Prevent the form from submitting
 
     // Get the form inputs values
-    const name = document.querySelector('#name').value;
+    const firstname = document.querySelector('#firstname').value;
+    const lastname = document.querySelector('#lastname').value;
+    const email = document.querySelector('#email').value;
     const age = document.querySelector('#age').value;
     const grade = document.querySelector('#grade').value;
     const interest = document.querySelector('#interest').value;
@@ -132,7 +142,9 @@
     
     // Create an object with the form data
     const formData = {
-      name: name,
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
       age: age,
       grade: grade,
       interest: interest,
@@ -160,7 +172,7 @@
       if (xhr.status === 200) {
         console.log('Learner setup data successfully submitted');
         // Redirect the user to the desired page after successful form submission
-        window.location.href = '{{ url_for("learner_setup") }}';
+        window.location.href = '{{ url_for("learning_tracks") }}';
       } else {
         console.error('Error:', xhr.statusText);
       }
@@ -175,19 +187,51 @@
     xhr.send(jsonData);
   });
 
-  // Click event to handle the YouTube video popup
-    document.querySelectorAll('.youtube-video').forEach(function(video) {
-        video.addEventListener('click', function() {
-            var videoSrc = this.src;
-            document.getElementById('videoIframe').src = videoSrc + "?autoplay=1";
-            $('#videoModal').modal('show');
-        });
-    });
+  // // Click event to handle the YouTube video popup
+  //   document.querySelectorAll('.youtube-video').forEach(function(video) {
+  //       video.addEventListener('click', function() {
+  //           var videoSrc = this.src;
+  //           document.getElementById('videoIframe').src = videoSrc + "?autoplay=1";
+  //           $('#videoModal').modal('show');
+  //       });
+  //   });
 
-    // Stop the video when the modal is closed
-    $('#videoModal').on('hide.bs.modal', function(e) {
-        document.getElementById('videoIframe').src = "";
-    });
+  //   // Stop the video when the modal is closed
+  //   $('#videoModal').on('hide.bs.modal', function(e) {
+  //       document.getElementById('videoIframe').src = "";
+  //   });
+
+     // Store the original size of the player
+  var originalSize = {};
+
+  // Click event to handle the YouTube video popup
+  document.querySelectorAll('.youtube-video').forEach(function(video) {
+      video.addEventListener('click', function() {
+          var videoSrc = this.src;
+          document.getElementById('videoIframe').src = videoSrc + "?autoplay=1&modestbranding=1&showinfo=0&rel=0";
+          
+          // Store the original size of the player
+          originalSize.width = this.offsetWidth;
+          originalSize.height = this.offsetHeight;
+
+          // Change the size of the player to 800 pixels wide
+          this.style.width = '800px';
+          this.style.height = (800 / 16) * 9 + 'px';  // Keep the aspect ratio 16:9
+
+          $('#videoModal').modal('show');
+      });
+  });
+
+  // Add a click event listener to the document
+  document.addEventListener('click', function(event) {
+    // If the clicked element is not the player or one of its descendants
+    if (!document.getElementById('videoIframe').contains(event.target)) {
+      // Resize the player back to its original size
+      var player = document.querySelector('.youtube-video');
+      player.style.width = originalSize.width + 'px';
+      player.style.height = originalSize.height + 'px';
+    }
+  });
 </script>
 
 {% endblock %}

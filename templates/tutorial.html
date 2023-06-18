@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}Quadratic Functions{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Quadratic Function Tutorial</h1>
+    
+      <div id="videoContainer">
+        <!-- YouTube video will be inserted here -->
+      </div>
+
+
+    <div class="row">
+
+      <div class="col-1">
+        <form method="POST" action="{{ url_for('favorite_video') }}">
+        <button type="submit" class="favorite-button">
+          {% if is_favorite %}
+            <i class="fas fa-heart filled"></i>
+          {% else %}
+            <i class="far fa-heart"></i>
+          {% endif %}
+        </button>
+      </form>
+      </div>
+      <div class="col-2">
+          <div class="card bg-light text-center">
+                <button class="btn btn-outline-primary btn-block card-body" id="prevBtn">
+                    <h5 class="card-title">Previous</h5>
+                </button>
+            </div>
+      </div>
+      <div class="col-2">
+          <div class="card bg-light text-center">
+                <button class="btn btn-outline-primary btn-block card-body" id="nextBtn">
+                    <h5 class="card-title">Next</h5>
+                </button>
+            </div>
+      </div>
+      
+    </div>
+  
+    <script>
+        // List of YouTube URLs
+        var videoUrls = [
+            "https://www.youtube.com/watch?v=Hq2Up_1Ih5E",
+            "https://www.youtube.com/watch?v=KRwb4YhQPwA",
+            "https://www.youtube.com/watch?v=qeByhTF8WEw",
+            "https://www.youtube.com/watch?v=pf9LkX8hpTQ",
+            "https://www.youtube.com/watch?v=IlNAJl36-10"
+        ];
+
+        var currentIndex = 0;
+
+        // Function to generate YouTube embed code from a URL
+        function youtubeEmbed(url) {
+            var videoId = url.split("v=")[1];
+            var embedUrl = "https://www.youtube.com/embed/" + videoId;
+            return '<iframe width="560" height="315" src="' + embedUrl + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        }
+
+        // Function to display a video
+        function showVideo(index) {
+            document.getElementById("videoContainer").innerHTML = youtubeEmbed(videoUrls[index]);
+        }
+
+        // Show the first video to start with
+        showVideo(currentIndex);
+
+        // Event listeners for the buttons
+        document.getElementById("prevBtn").addEventListener("click", function() {
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex = videoUrls.length - 1; // Loop back to the last video
+            }
+            showVideo(currentIndex);
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", function() {
+            currentIndex++;
+            if (currentIndex >= videoUrls.length) {
+                currentIndex = 0; // Loop back to the first video
+            }
+            showVideo(currentIndex);
+        });
+
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const favoriteButton = document.querySelector('.favorite-button');
+      const heartIcon = favoriteButton.querySelector('.fa-heart');
+
+      favoriteButton.addEventListener('click', function() {
+        heartIcon.classList.toggle('filled');
+      });
+    });
+
+
+      
+    </script>
+</div>
+{% endblock %}

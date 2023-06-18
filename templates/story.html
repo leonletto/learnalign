@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Story{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h1>Story about quadratic functions and baseball</h1>
+    <p>{{ story }}</p>
+    <audio controls>
+        <source src="{{ audio_url }}" type="audio/mpeg">
+    </audio>
+  
+    <div class="row">
+    
+    <form method="POST" action="{{ url_for('favorite_story') }}">
+      <input type="hidden" name="story_id" value="{{ story_id }}">
+      <button type="submit" class="favorite-button">
+        {% if is_favorite %}
+          <i class="fas fa-heart filled"></i>
+        {% else %}
+          <i class="far fa-heart"></i>
+        {% endif %}
+      </button>
+    </form>
+    <!-- Adding the New Story button -->
+
+      <div class="col-4">
+          <div class="card bg-light text-center">
+              <button onclick="location.reload();" class="btn btn-outline-primary btn-block card-body">New Story</button>
+                  
+          </div>
+      </div>
+
+    </div> 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const favoriteButton = document.querySelector('.favorite-button');
+      const heartIcon = favoriteButton.querySelector('.fa-heart');
+
+      favoriteButton.addEventListener('click', function() {
+        heartIcon.classList.toggle('filled');
+        location.reload();
+      });
+      
+    });
+  </script>
+  <br/><br/><br/><br/><br/><br/>
+
+{% endblock %}

@@ -6,29 +6,100 @@
 <div style="position: relative; min-height: 100vh;">
     <video autoplay loop muted style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1;">
         <source src="{{ url_for('static', filename='videos/IntroVideoSmall.mp4') }}" type="video/mp4">
-        Your browser does not support the video tag.
+        
     </video>
-    <div style="position: relative; z-index: 1;">
-        <div class="container">
-            <h1 class="my-4 scrolling-text">Welcome to HackAI Learn</h1>
-            <p class="scrolling-text">A New way to learn YOUR way!</p>
+    <div class="w-100" style="position: relative; z-index: 1;">
+        <div class="container mainLogo">
+          <img class="centered-image" src="{{ url_for('static', filename='images/SmallLogo.png') }}" alt="LearnAlign" width="200">
         </div>
         <div class="container text-center text-white" >
-          <h1 class="my-4 scrolling-text" style="font-size: 2em">PERSONALIZED LEARNING</h1>
-          <h1 class="my-4 scrolling-text" style="font-size: 2em">FOR A LIMITLESS FUTURE</h1>
-          <h4 >A New way to learn YOUR way!</h4>
+          <h1 class="my-4 " style="font-size: 4em">PERSONALIZED LEARNING</h1>
+          <h1 class="my-4 " style="font-size: 4em">FOR A</h1>
+          <h1 class="my-4 " style="font-size: 4em">LIMITLESS FUTURE</h1>
+          <br/><br/>
+        </div>
+        <div class="container-fluid text-center bg-white w-100" >
+          <div class="container text-center" >
+            <br/><br/>
+          <h1 class="my-4 text-primary">Every child deserves to unlock their full potential.</h1>
+          <h4 class="my-4 ">LearnAlign is the innovative kids educational platform designed to support the curriculum taught in school while prioritizing personalized learning.
+</h4>
+          <h4 class="my-4 " >We understand that every child is unique, and their education should reflect that. Our expertly crafted curriculum adapts to your child's learning style, ensuring they are engaged, motivated, and excelling at their own pace.</h4>
+            <br/><br/>
+          </div>
         </div>
         <br/>
         <br/>
         <br/>
         <br/><br/>
+        <div class="container-fluid text-center bg-white w-100" >
+          <div class="container text-center" >
+              <br/><br/>
+              <div class="row">
+                  <div class="col-lg-4 col-md-6">
+                      <img src="{{ url_for('static', filename='images/PersonalizedLearning.png') }}" class="img-fluid my-image" alt="Image 1">
+                  </div>
+                  <div class="col-lg-4 col-md-6">
+                      <img src="{{ url_for('static', filename='images/ProgressTracking.png') }}" class="img-fluid my-image" alt="Image 2">
+                  </div>
+                  <div class="col-lg-4 col-md-6">
+                      <img src="{{ url_for('static', filename='images/EngagingContent.png') }}" class="img-fluid my-image" alt="Image 3">
+                  </div>
+              </div>
+              <br/><br/>
+          </div>
+        </div>
+          <br/>
         <br/>
         <br/>
+        <br/><br/>
+        <div class="container-fluid text-center bg-white w-100" >
+            <div class="container text-center">
+                <br/><br/>
+                <h1 class="my-4 ">Unlock the complete learning system in just 3 easy steps.</h1>
+                <div class="row">
+                    <div class="col-9 d-flex justify-content-start">
+                        <div class="img-wrapper">
+                            <img src="{{ url_for('static', filename='images/Step1.png') }}" class="my-wide-image" alt="Image 1">
+                        </div>
+                    </div>
+                    <div class="col-9 d-flex justify-content-center">
+                        <div class="img-wrapper">
+                            <img src="{{ url_for('static', filename='images/Step2.png') }}" class="my-wide-image" alt="Image 2">
+                        </div>
+                    </div>
+                    <div class="col-9 d-flex justify-content-end">
+                        <div class="img-wrapper">
+                            <img src="{{ url_for('static', filename='images/Step3.png') }}" class="my-wide-image" alt="Image 3">
+                        </div>
+                    </div>
+                </div>
+                <br/><br/>
+            </div>
+        </div>
         <br/>
-        <div style="width: 100%; background-color: white; text-align: center;">
+        <br/>
+        <br/><br/>
+        <div class="container-fluid text-center bg-white w-100 last-div" >
+            <div class="container text-center">
+                <br/><br/>
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                      <a href="{{ url_for('persona_selection') }}">
+                        <div class="img-wrapper">
+                            <img src="{{ url_for('static', filename='images/GetStarted.png') }}" width=200>
+                        </div>
+                      </a>
+                    </div
+                </div>
+                <br/><br/>
+            </div>
+        </div>
+      <!-- <br/> -->
+        <!-- <div style="width: 100%; background-color: white; text-align: center;">
             <p>This is where more content goes</p>
         </div>
-        <div style="width: 100%; position: fixed; background-color: white; text-align: center;">
+        <div style="width: 100%; position: fixed; background-color: white; text-align: center;"> -->
         
         </div>
     </div>

@@ -6,15 +6,15 @@
 <div class="container">
     <!-- Custom welcome message -->
     <h1 class="my-4 text-center">
-    {% if session['role'] == 'Guardian' %}
+    {% if role == 'guardian' %}
         <p>The world needs more awesome parents like you.</p>
         <p>Let's get started!</p>
-        
-        
-    {% elif session['role'] == 'Learner' %}
-        You Got This!!
-    {% elif session['role'] == 'Creator' %}
-        Your content is going to help everyone!
+    {% elif role == 'learner' %}
+        <p>You Got This!!</p>
+    {% elif role == 'creator' %}
+        <p> Your content is going to help everyone!</p>
+    {% else %}
+      <p>Please register</p>
     {% endif %}
     </h1>
     <form method="POST">
@@ -43,7 +43,7 @@
             <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
         </div>
         <!-- Extra field for Learners -->
-        {% if session['role'] == 'Learner' %}
+        {% if role == 'learner' %}
         <div class="form-group">
             <label for="grade">Grade</label>
             <input type="text" class="form-control" id="grade" name="grade" required>
@@ -51,5 +51,8 @@
         {% endif %}
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
+  <br/><br/><br/>
+
 </div>
+
 {% endblock %}

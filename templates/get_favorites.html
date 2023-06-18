@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Favorites</h1>
+    <table id="favoritesTable" class="table-line">
+        <thead>
+            <tr>
+                <th>Story</th>
+                <th>Audio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for favorite in favorites %}
+            <tr>
+                <td>{{ favorite.story }}</td>
+                <td>
+                    <audio controls>
+                        <source src="{{ favorite.url }}" type="audio/mpeg">
+                    </audio>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <style>
+        .table-line tr {
+            border-bottom: 1px solid #000; /* Border below each row */
+        }
+        .table-line td, .table-line th {
+            border-left: 1px solid #000; /* Border to the left of each cell and header */
+        }
+        .table-line td:first-child, .table-line th:first-child {
+            border-left: none; /* Removes the left border for the first cell of each row and header */
+        }
+    </style>
+</div>
+<br/><br/><br/>
+
+{% endblock %}

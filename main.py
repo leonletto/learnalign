@@ -22,6 +22,7 @@ else:
 app.config['SQLALCHEMY_DATABASE_URI'] = dburl
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+####
 
 
 class User(db.Model):
@@ -39,6 +40,7 @@ class Topic(db.Model):
   parent_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
   parent = db.relationship('Topic', remote_side=[id])
   notes = db.Column(db.Text)  # For storing the notes as a JSON string
+
 
 def verify_password(username, password):
   user = User.query.filter_by(username=username).first()
@@ -68,7 +70,7 @@ class CaInterface:
         if username and password and verify_password(username, password):
           session['logged_in'] = True
           session['username'] = username
-          return redirect(f'{self.interface_path}/learner_setup', code=302)
+          return redirect(f'{self.interface_path}/learning_tracks', code=302)
         else:
           flash('Invalid username or password')
       return render_template('login.html')
@@ -98,7 +100,6 @@ class CaInterface:
         }
         if grade:
           statedict['grade'] = grade
-
         state = json.dumps(statedict)
 
         # Then, check if the username already exists in your database
@@ -115,11 +116,17 @@ class CaInterface:
         session['username'] = username
 
         # Redirect to the learner_setup route
-        return redirect(f'{self.interface_path}/learner_setup', code=302)
-      role = session.get('role')
+        if session['role'] == 'guardian':
+          return redirect(f'{self.interface_path}/parent', code=302)
+        else:
+          return redirect(f'{self.interface_path}/learner_setup', code=302)
+
+      print(session['role'])
+      role = session['role']
       return render_template('register.html', role=role)
 
-    @app.route(f'{self.interface_path}/persona_selection', methods=['GET', 'POST'])
+    @app.route(f'{self.interface_path}/persona_selection',
+               methods=['GET', 'POST'])
     def persona_selection():
       if request.method == 'POST':
         session['role'] = request.form.get('persona')
@@ -137,7 +144,11 @@ class CaInterface:
     highest_id_user = User.query.order_by(User.id.desc()).first()
     new_id = (highest_id_user.id + 1) if highest_id_user else 1
 
-    user = User(id=new_id, username=username, password=password, role=user_type, state=state)
+    user = User(id=new_id,
+                username=username,
+                password=password,
+                role=user_type,
+                state=state)
     db.session.add(user)
     db.session.commit()
 
