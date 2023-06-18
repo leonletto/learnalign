@@ -4,7 +4,19 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="my-4 text-center">Register</h1>
+    <!-- Custom welcome message -->
+    <h1 class="my-4 text-center">
+    {% if session['role'] == 'Guardian' %}
+        <p>The world needs more awesome parents like you.</p>
+        <p>Let's get started!</p>
+        
+        
+    {% elif session['role'] == 'Learner' %}
+        You Got This!!
+    {% elif session['role'] == 'Creator' %}
+        Your content is going to help everyone!
+    {% endif %}
+    </h1>
     <form method="POST">
         <div class="form-group">
             <label for="firstname">First Name</label>
@@ -30,6 +42,13 @@
             <label for="confirm_password">Confirm Password</label>
             <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
         </div>
+        <!-- Extra field for Learners -->
+        {% if session['role'] == 'Learner' %}
+        <div class="form-group">
+            <label for="grade">Grade</label>
+            <input type="text" class="form-control" id="grade" name="grade" required>
+        </div>
+        {% endif %}
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>
