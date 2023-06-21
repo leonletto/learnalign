@@ -1,27 +1,64 @@
-from flask import Flask, request, jsonify, flash, redirect, session, render_template
+from flask import Flask, request, flash, redirect, session, render_template
 from flask_httpauth import HTTPBasicAuth
 from flask_sqlalchemy import SQLAlchemy
-import os
+import time
 import json
-from routes import setup_routes
 
-# auth = HTTPBasicAuth()
+from sqlalchemy import text
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+from sqlite3 import Connection as SQLite3Connection
+
+from routes import setup_routes
+from sqlalchemy.exc import OperationalError
+from flask_apscheduler import APScheduler
+
+
+def keep_db_awake():
+  with app.app_context():
+    try:
+      db.session.execute(text("SELECT 1"))
+    except OperationalError:
+      print("Error while executing keep-alive query.")
+    else:
+      print("Keep-alive query executed successfully.")
+
+
+class Config(object):
+  TZ = 'America/Los_Angeles'
+  JOBS = [{
+    'id': 'keep_db_awake',
+    'func': '__main__:keep_db_awake',
+    'trigger': 'interval',
+    'minutes': 4,
+  }]
+
+  SQLALCHEMY_TRACK_MODIFICATIONS = False
+  SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'  # Updated for SQLite
+  SECRET_KEY = '8238f8hwefrw83eed'
+  SCHEDULER_API_ENABLED = True
+
 
 # setup the SQLAlchemy with the flask app
 app = Flask(__name__)
-app.secret_key = '8238f8hwefrw83eed'
+app.config.from_object(Config())
 
-# Load the database URL from the environment variable
-dburl = os.getenv('DATABASE_URL')
-if not dburl:
-  dburl = 'postgresql://lettol@localhost:5432/lettol'
-else:
-  # change postgres to postgresql in the dburl
-  dburl = dburl.replace('postgres', 'postgresql')
-
-app.config['SQLALCHEMY_DATABASE_URI'] = dburl
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
+# enforce foreign key constraints in SQLite
+@event.listens_for(Engine, "connect")
+def _set_sqlite_pragma(dbapi_connection, connection_record):
+  if isinstance(dbapi_connection, SQLite3Connection):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
+
+
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
 ####
 
 
@@ -70,6 +107,8 @@ class CaInterface:
         if username and password and verify_password(username, password):
           session['logged_in'] = True
           session['username'] = username
+          print(f'Logged in as {username}'.format(username))
+          print(session)
           return redirect(f'{self.interface_path}/learning_tracks', code=302)
         else:
           flash('Invalid username or password')
@@ -90,7 +129,7 @@ class CaInterface:
         # First, check if the passwords match
         if password != confirm_password:
           flash('Passwords do not match.', 'danger')
-          return redirect(f'{self.interface_path}/register', code=302)
+          return render_template('register.html', role=user_type)
 
         # Prepare the state as a JSON string
         statedict = {
@@ -105,7 +144,7 @@ class CaInterface:
         # Then, check if the username already exists in your database
         if self.user_exists(username):
           flash('Username already exists')
-          return render_template('register.html')
+          return render_template('register.html', role=user_type)
 
         # If the passwords match and the username is not taken, create the user
         self.create_user(username, password, user_type, state)
@@ -143,6 +182,10 @@ class CaInterface:
   def create_user(self, username, password, user_type, state):
     highest_id_user = User.query.order_by(User.id.desc()).first()
     new_id = (highest_id_user.id + 1) if highest_id_user else 1
+    # check if the user exists in the database
+    check_user = User.query.filter_by(username=username).first()
+    if check_user:
+      return False
 
     user = User(id=new_id,
                 username=username,
@@ -157,6 +200,26 @@ def main():
   auth = HTTPBasicAuth()
 
   ca_interface = CaInterface(auth, User, db, Topic)
+
+  with app.app_context():
+    db.create_all()
+    # Try to connect to the database
+    for _ in range(3):  # Retry 3 times
+      try:
+        db.session.execute(
+          text("SELECT 1"))  # Simple query to check if DB connection works
+        break
+      except OperationalError:  # If connection does not work, wait and retry
+        print("Database not ready, waiting...")
+        time.sleep(5)  # Wait for 5 seconds before retrying
+    else:
+      print("Could not connect to the database.")
+      return render_template(
+        '503.html'
+      ), 503  # Return a 503 error if the DB is not ready after 3 attempts
+
+  # If the database is ready, run the app
+
   ca_interface.run()
 
 

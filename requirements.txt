@@ -1,10 +1,10 @@
 numpy>=1.22.2
-replit>=3.2.4
 Flask~=2.2.0
 urllib3>=1.26.12
 Flask-HTTPAuth>=4.8.0
 Flask-SQLAlchemy>=3.0.3
-psycopg2-binary==2.9.6
-psycopg2==2.9.6
-django-huangwei-course>=0.1
 openai>=0.27.8
+
+SQLAlchemy~=2.0.16
+requests~=2.31.0
+gunicorn~=20.1.0

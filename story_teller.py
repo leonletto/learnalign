@@ -1,15 +1,16 @@
-# agenda = {"course": "Math", "topic": "Quadratic Functions", "subtopic":""}
-# user = {"age": 13, "interest": "baseball"}
+import os
 
 import openai
 import requests
 
-OPENAI_API_KEY = "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"
-X_RapidAPI_Key = "619309f7a7msh6e974be053cf6afp15e693jsn158ac76a32d7"
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+X_RapidAPI_Key = os.environ.get("X_RapidAPI_Key")
 X_RapidAPI_Host = "large-text-to-speech.p.rapidapi.com"
+
 
 openai.api_key = OPENAI_API_KEY
 
+print(f"OPENAI_API_KEY: {OPENAI_API_KEY} X_RapidAPI_Key: {X_RapidAPI_Key}")
 
 def get_story(
   user,

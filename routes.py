@@ -125,6 +125,7 @@ def setup_routes(app, auth, User, db, Topic, interface_path, base_path):
 
   @app.route(f'{interface_path}/learning_tracks', methods=['GET', 'POST'])
   def learning_tracks():
+    print(session)
     if 'logged_in' not in session or not session['logged_in']:
       return redirect(f'{interface_path}/login', code=302)
 
