@@ -3,6 +3,8 @@ import os
 import openai
 import requests
 
+# Generate stories using the OpenAI API then convert to speech using the RapidAPI API
+
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 X_RapidAPI_Key = os.environ.get("X_RapidAPI_Key")
 X_RapidAPI_Host = "large-text-to-speech.p.rapidapi.com"

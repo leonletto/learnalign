@@ -213,7 +213,7 @@ def main():
         print("Database not ready, waiting...")
         time.sleep(5)  # Wait for 5 seconds before retrying
     else:
-      print("Could not connect to the database.")
+      print("Could not connect to the database. Please check the connection.")
       return render_template(
         '503.html'
       ), 503  # Return a 503 error if the DB is not ready after 3 attempts

@@ -21,7 +21,7 @@ ssh $ssh_server "if [ -d $remote_directory/venv ]; then source $remote_directory
 # Check that pip install ran properly
 if [ $? -ne 0 ]
 then
-    echo "Error: Failed to install Python dependencies"
+    echo "Error: Failed to install Python dependencies on remote server"
     exit 1
 fi
 

@@ -61,7 +61,7 @@ def setup_routes(app, auth, User, db, Topic, interface_path, base_path):
     db.session.commit()  # Commit the changes
 
     flash('User state updated successfully.',
-          'success')  # Flash a success message
+          'success')
 
     return redirect(
       f'{interface_path}/learner_setup')  # Redirect to learner_setup template

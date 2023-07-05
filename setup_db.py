@@ -1,3 +1,6 @@
+# used to setup the database for the first time and populate it with data
+
+
 json_data = {
   "Social Studies": {
     "US History I": {},
